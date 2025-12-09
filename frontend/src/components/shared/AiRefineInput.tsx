@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Sparkles, History, ChevronDown, ChevronUp, Send } from 'lucide-react';
 
 export interface AiRefineInputProps {
@@ -16,7 +16,7 @@ export interface AiRefineInputProps {
   onStatusChange?: (isSubmitting: boolean) => void;
 }
 
-export const AiRefineInput: React.FC<AiRefineInputProps> = ({
+const AiRefineInputComponent: React.FC<AiRefineInputProps> = ({
   title,
   placeholder,
   onSubmit,
@@ -156,4 +156,8 @@ export const AiRefineInput: React.FC<AiRefineInputProps> = ({
     </div>
   );
 };
+
+// 使用 memo 包装组件，避免父组件频繁重渲染时影响输入框
+// 只有当 props 真正变化时才重新渲染
+export const AiRefineInput = memo(AiRefineInputComponent);
 

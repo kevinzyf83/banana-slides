@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Save, ArrowRight, Plus, FileText, Sparkle } from 'lucide-react';
 import {
@@ -129,7 +129,7 @@ export const OutlineEditor: React.FC = () => {
     }
   };
 
-  const handleAiRefineOutline = async (requirement: string, previousRequirements: string[]) => {
+  const handleAiRefineOutline = useCallback(async (requirement: string, previousRequirements: string[]) => {
     if (!currentProject || !projectId) return;
     
     try {
@@ -147,7 +147,7 @@ export const OutlineEditor: React.FC = () => {
       show({ message: errorMessage, type: 'error' });
       throw error; // 抛出错误让组件知道失败了
     }
-  };
+  }, [currentProject, projectId, syncProject, show]);
 
   const selectedPage = currentProject?.pages.find((p) => p.id === selectedPageId);
 

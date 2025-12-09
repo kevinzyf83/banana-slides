@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, FileText, Sparkles } from 'lucide-react';
 import { Button, Loading, useToast, useConfirm, AiRefineInput } from '@/components/shared';
@@ -96,7 +96,7 @@ export const DetailEditor: React.FC = () => {
     }
   };
 
-  const handleAiRefineDescriptions = async (requirement: string, previousRequirements: string[]) => {
+  const handleAiRefineDescriptions = useCallback(async (requirement: string, previousRequirements: string[]) => {
     if (!currentProject || !projectId) return;
     
     try {
@@ -114,7 +114,7 @@ export const DetailEditor: React.FC = () => {
       show({ message: errorMessage, type: 'error' });
       throw error; // 抛出错误让组件知道失败了
     }
-  };
+  }, [currentProject, projectId, syncProject, show]);
 
   if (!currentProject) {
     return <Loading fullscreen message="加载项目中..." />;
