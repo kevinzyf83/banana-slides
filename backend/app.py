@@ -220,6 +220,18 @@ def _load_settings_to_config(app):
         if settings.output_language:
             app.config['OUTPUT_LANGUAGE'] = settings.output_language
             logging.info(f"Loaded OUTPUT_LANGUAGE from settings: {settings.output_language}")
+        
+        # Load reasoning mode settings (separate for text and image)
+        app.config['ENABLE_TEXT_REASONING'] = settings.enable_text_reasoning
+        app.config['TEXT_THINKING_BUDGET'] = settings.text_thinking_budget
+        app.config['ENABLE_IMAGE_REASONING'] = settings.enable_image_reasoning
+        app.config['IMAGE_THINKING_BUDGET'] = settings.image_thinking_budget
+        logging.info(f"Loaded reasoning config: text={settings.enable_text_reasoning}(budget={settings.text_thinking_budget}), image={settings.enable_image_reasoning}(budget={settings.image_thinking_budget})")
+        
+        # Load Baidu OCR settings
+        if settings.baidu_ocr_api_key:
+            app.config['BAIDU_OCR_API_KEY'] = settings.baidu_ocr_api_key
+            logging.info("Loaded BAIDU_OCR_API_KEY from settings")
 
     except Exception as e:
         logging.warning(f"Could not load settings from database: {e}")
