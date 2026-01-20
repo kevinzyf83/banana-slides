@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, FileText, FileEdit, Paperclip, Palette, Lightbulb, Search, Settings, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, FileText, FileEdit, ImagePlus, Paperclip, Palette, Lightbulb, Search, Settings, Image as ImageIcon } from 'lucide-react';
 import { Button, Textarea, Card, useToast, MaterialGeneratorModal, ReferenceFileList, ReferenceFileSelector, FilePreviewModal, ImagePreviewList } from '@/components/shared';
 import { TemplateSelector, getTemplateFile } from '@/components/shared/TemplateSelector';
 import { listUserTemplates, type UserTemplate, uploadReferenceFile, type ReferenceFile, associateFileToProject, triggerFileParse, uploadMaterial, associateMaterialsToProject, listProjects } from '@/api/endpoints';
 import { useProjectStore } from '@/store/useProjectStore';
 import { PRESET_STYLES } from '@/config/presetStyles';
-import { getImageUrl } from '@/api/client';
 
 type CreationType = 'idea' | 'outline' | 'description';
 
@@ -51,6 +50,11 @@ export const Home: React.FC = () => {
     };
     loadTemplates();
   }, []);
+
+  const handleOpenMaterialModal = () => {
+    // 在主页始终生成全局素材，不关联任何项目
+    setIsMaterialModalOpen(true);
+  };
 
   // 检测粘贴事件，自动上传文件和图片
   const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -119,7 +123,7 @@ export const Home: React.FC = () => {
       const response = await uploadMaterial(file, null);
       
       if (response?.data?.url) {
-        const imageUrl = getImageUrl(response.data.url);
+        const imageUrl = response.data.url;
         
         // 生成markdown图片链接
         const markdownImage = `![image](${imageUrl})`;
@@ -483,6 +487,25 @@ export const Home: React.FC = () => {
             </span>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
+            {/* 桌面端：带文字的素材生成按钮 */}
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={<ImagePlus size={16} className="md:w-[18px] md:h-[18px]" />}
+              onClick={handleOpenMaterialModal}
+              className="hidden sm:inline-flex hover:bg-banana-100/60 hover:shadow-sm hover:scale-105 transition-all duration-200 font-medium"
+            >
+              <span className="hidden md:inline">素材生成</span>
+            </Button>
+            {/* 手机端：仅图标的素材生成按钮 */}
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={<ImagePlus size={16} />}
+              onClick={handleOpenMaterialModal}
+              className="sm:hidden hover:bg-banana-100/60 hover:shadow-sm hover:scale-105 transition-all duration-200"
+              title="素材生成"
+            />
             <Button
               variant="ghost"
               size="sm"
